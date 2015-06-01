@@ -37,7 +37,9 @@ Type of file and content:
     This script is used on the remote machines in pair with the .mysql_cred file to keep the name-ip_address updated in the service DB
     
 - generate_ifrastructure.sh
-    The initial script which will orchestrate the Playbooks and tune the configuration files for all the servers
+    The initial script which will orchestrate the Playbooks and tune the configuration files for all the servers.
+    It contains most of the variables which will determine your infrastructure and by default you will need to use a number as a parameter
+    to define the numbers of web servers you want as initial configuration (keep in mind you will be able to add and remove servers later on)
     
 - rax.py
     This file represent the dynamic inventory of Ansible, please see http://docs.ansible.com/guide_rax.html
