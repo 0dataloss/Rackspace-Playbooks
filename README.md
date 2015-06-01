@@ -9,7 +9,7 @@ A sub-directory for every project will contain:
 - Documentation for every file (txt.txt)
 
 In order to use the template you need to have a console available to interact
-with Rackspace Cloud API.
+with Rackspace Cloud API, please look at http://docs.ansible.com/guide_rax.html .
 
 
 Every file in this repository is intended to be released under the Apache License, Version 2.0
