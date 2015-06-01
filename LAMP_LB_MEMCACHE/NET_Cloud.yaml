@@ -1,0 +1,14 @@
+- name: Build a private network for private unencrypted transactions
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+
+    - name: Network create request
+      local_action:
+        module: rax_network
+        credentials: ./repo
+        label: mem
+        cidr: 172.16.0.0/24
+        state: present
+        region: LON

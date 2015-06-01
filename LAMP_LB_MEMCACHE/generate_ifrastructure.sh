@@ -47,9 +47,10 @@ PASSWORD=$PASSUSERBEDBNAME" > .mysql_cred
 # Create service DB
 echo "select * from server_list limit 1;" |mysql -h $DBHOST -u $USERBEDBNAME -p$PASSUSERBEDBNAME $BEDBNAME || mysql -h $DBHOST -u $USERBEDBNAME -p$PASSUSERBEDBNAME $BEDBNAME < ./sqlschema.sql
 
-# Run playbook for servers and LB generation
+# Run playbook for servers, networks, and LB generation
 
-ansible-playbook  SRV_instances.yaml -e "websrvn=$WEBSRVN memcachesrvn=$MEMCACHESRVN"
+RAX_ACCESS_NETWORK=private ansible-playbook  NET_Cloud.yaml
+RAX_ACCESS_NETWORK=private ansible-playbook  SRV_instances.yaml -e "websrvn=$WEBSRVN memcachesrvn=$MEMCACHESRVN"
 
 # Generate memcache config files from templates
 LIST=$(echo "select ip from server_list where name like \"memcache%-${MEMCACHEADDR}\";" |mysql --skip-column-names -h $DBHOST -u $USERBEDBNAME -p$PASSUSERBEDBNAME $BEDBNAME )
