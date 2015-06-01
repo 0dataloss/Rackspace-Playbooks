@@ -8,6 +8,9 @@ A sub-directory for every project will contain:
 - The architecture of the infrastructure (txt.ascii)
 - Documentation for every file (txt.txt)
 
+In order to use the template you need to have a console available to interact
+with Rackspace Cloud API.
+
 
 Every file in this repository is intended to be released under the Apache License, Version 2.0
 and as per documentation http://opensource.org/licenses/Apache-2.0 if not differently specified
