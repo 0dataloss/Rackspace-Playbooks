@@ -9,11 +9,11 @@ A sub-directory for every project will contain:
 - Documentation for every file (txt.txt)
 
 
-Every file in this repository will be released under the Apache License, Version 2.0
-and as per documentation http://opensource.org/licenses/Apache-2.0 .
-To every file will be attached the following header:
+Every file in this repository is intended to be released under the Apache License, Version 2.0
+and as per documentation http://opensource.org/licenses/Apache-2.0 if not differently specified
+in the file itself.
 
-   Copyright [yyyy] [name of copyright owner]
+   Copyright 2015 Matteo Castellani <matteo@t-hoster.com>
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
