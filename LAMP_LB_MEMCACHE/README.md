@@ -28,7 +28,7 @@ Type of file and content:
     - A Public to S-net Cloud Load Balancer
     - A number of Web servers, assign them to the web group and connect them to the Cloud Load Balancer previously created
     - 1 Memcache server and assign it to the memcache group
-    Additionally, if the webserver's number will change in time, the Playbook is able to adjust the CLB settings in realtime (delete or add nodes)
+    - Additionally, if the webserver's number will change in time, the Playbook is able to adjust the CLB settings in realtime (delete or add nodes)
     
 - SW_config.yaml
     This Playbook is responsible for installing software for all the machines in the infrastructure
@@ -48,7 +48,7 @@ Type of file and content:
     repo file contains the necessary information for the authentication of rax.py
     
 - server_files
-    Template which will be copyed on the servers
+    Template which will be copied on the servers
     
 - sqlschema.sql
     The SQL shema for the Service Database
