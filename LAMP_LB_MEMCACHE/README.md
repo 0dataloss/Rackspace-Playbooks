@@ -1,3 +1,12 @@
+# Use of this infrastructure
+
+This infrastructure is a "one way only" code publishing.
+Is good for all the websites/blog where the code and all the files
+are uploaded and managed from one source ONLY, and there is no code/image/file upload
+from the users.
+If the website is hosting a CMS where the owner wants to publish images, the use of
+a CDN system is highly encouraged.
+
 # How to use this template
 
 This template is comprehensive of:
