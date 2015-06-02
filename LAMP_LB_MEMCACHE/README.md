@@ -2,9 +2,9 @@
 
 This template is comprehensive of:
 
-A presentation Layer : Cloud Load Balancer
-An application layer : Cloud Servers (WEB+Memcache)
-A Database Layer : Cloud Database instance
+ A presentation Layer : Cloud Load Balancer
+ An application layer : Cloud Servers (WEB+Memcache)
+ A Database Layer : Cloud Database instance
 
 Type of file and content:
 
