@@ -19,11 +19,11 @@ RAMDBINSTANCENAME=1
 DISKDBINSTANCENAME=1
 APPDBNAME=web_db
 USERAPPDBNAME=username
-PASSUSERAPPDBNAME= # Generate your password using "cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1"
+PASSUSERAPPDBNAME=test123 # Generate your password using "cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1"
 BEDBNAME=back-end_DB
 USERBEDBNAME=username
-PASSUSERBEDBNAME= # Generate your password using "cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1"
-WEBSRVN=$1
+PASSUSERBEDBNAME=testtest # Generate your password using "cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1"
+WEBSRVN=2
 MEMCACHESRVN=1 # for this infrastructure there will be only one memcache server
 MEMCACHEPORT=11211
 MEMCACHEADDR=eth2
@@ -63,4 +63,4 @@ $(echo "sed -i  -e s/MEMCACHESERVERSHERE/\'${LINE}\'/g  ./server_files/web/etc/p
 $(echo "sed -i  -e s/SERVERNUMBERHERE/${HOWMANY}/g ./server_files/web/etc/php5/mods-available/memcache.ini ")
 
 # Run playbook for software configuration
-RAX_CREDS_FILE=./repo RAX_ACCESS_NETWORK=private ansible-playbook -i rax.py ksoftware.yaml
+RAX_CREDS_FILE=./repo RAX_ACCESS_NETWORK=private ansible-playbook -i rax.py SW_config.yaml

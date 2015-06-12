@@ -46,11 +46,11 @@
       service: name=apache2 state=started enabled=yes
 
     - name: Sync content ETC/APACHE
-      synchronize: src="/root/kinfra/server_files/web/etc/apache2" dest="/etc/"
+      synchronize: src="./server_files/web/etc/apache2" dest="/etc/"
     - name: Sync content ETC/PHP5
-      synchronize: src="/root/kinfra/server_files/web/etc/php5" dest="/etc/"
+      synchronize: src="./server_files/web/etc/php5" dest="/etc/"
     - name: Sync content WWW
-      synchronize: src="/root/kinfra/server_files/web/var/www" dest="/var/"
+      synchronize: src="./server_files/web/var/www" dest="/var/"
 
     - name: restart apache2
       service: name=apache2 state=restarted
@@ -58,7 +58,7 @@
 - name: Configure servers
   hosts: memcache
   tasks:
-    - shell: cd /root/kutils && bash env.sh && bash env.sh eth2 eth2
+    - shell: cd /root/utils && bash env.sh && bash env.sh eth2 eth2
     - name: Install memcached 
       apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=86400
       with_items:
@@ -68,6 +68,6 @@
       service: name=memcached state=started enabled=yes
 
     - name: Sync content ETC
-      synchronize: src="/root/kinfra/server_files/memcache/etc/memcached.conf" dest="/etc/"
+      synchronize: src="./server_files/memcache/etc/memcached.conf" dest="/etc/"
     - name: restart memcached
       service: name=memcached state=restarted

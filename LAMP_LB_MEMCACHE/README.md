@@ -45,7 +45,7 @@ Type of file and content:
 - env.sh
     This script is used on the remote machines in pair with the .mysql_cred file to keep the name-ip_address updated in the service DB
     
-- generate_ifrastructure.sh
+- generate_infrastructure.sh
     The initial script which will orchestrate the Playbooks and tune the configuration files for all the servers.
     It contains most of the variables which will determine your infrastructure and by default you will need to use a number as a parameter
     to define the numbers of web servers you want as initial configuration (keep in mind you will be able to add and remove servers later on)
