@@ -14,21 +14,21 @@ for all the code push or configuration actions; all the traffic on Service-net
 is for free. 
 To install a consolle spin-up a Debian 8 Cloud Server, 1GB will be good enough as a start.
 Execute:
-apt-get update && apt-get upgrade -y && reboot
-apt-get install python-dev python-pip mysql-client vim -y
-pip install pyrax
-pip install ansible
-apt-get install ansible
+     apt-get update && apt-get upgrade -y && reboot
+     apt-get install python-dev python-pip mysql-client vim -y
+     pip install pyrax
+     pip install ansible
+     apt-get install ansible
 
 In /etc/ssh/ssh_config change the StrictHostKeyChecking line from:
-#   StrictHostKeyChecking ask
+     #   StrictHostKeyChecking ask
 to
-   StrictHostKeyChecking no
+        StrictHostKeyChecking no
 
 In /etc/ansible/hosts at the end of the file add:
 
-[localhost]
-localhost ansible_connection=local
+     [localhost]
+     localhost ansible_connection=local
 
 Create an ssh using the command ssh-keygen anc then issue the command
 cat /root/.ssh/id_rsa.pub
