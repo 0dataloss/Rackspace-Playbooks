@@ -1,0 +1,4 @@
+[rackspace_cloud]
+username = RACKPSACE_USERNAME
+api_key = API_KEY
+RAX_REGION = REGION

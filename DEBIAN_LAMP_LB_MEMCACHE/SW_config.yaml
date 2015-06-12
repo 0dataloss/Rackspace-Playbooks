@@ -1,0 +1,73 @@
+#   Copyright 2015 Matteo Castellani <matteo@t-hoster.com>
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+- name: Configure servers
+  hosts: web:memcache
+  handlers:
+  tasks:
+    - shell: apt-get update && apt-get upgrade -y
+    - name: Update & Upgrade
+      apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=400
+      with_items:
+        - mysql-client
+
+    - shell: sed -i /etc/hosts -e 's/^\(10.[0-9]\{1,3\}.[0-9]\{1,3\}.[0-9]\{1,3\}\)\(.*{{ ansible_hostname }}\)$/\1  eth1/'
+    - shell: sed -i /etc/hosts -e 's/^\(172.16.[0-9]\{1,3\}.[0-9]\{1,3\}\)\(.*{{ ansible_hostname }}\)$/\1  eth2/'
+    - file: path=/root/utils state=directory owner=root group=root mode=700
+    - copy: src=./env.sh dest=/root/utils/env.sh owner=root group=root mode=700
+    - copy: src=./.mysql_cred dest=/root/utils/.mysql_cred owner=root group=root mode=600
+    - shell: cd /root/utils && bash env.sh && bash env.sh eth1 eth1
+
+
+- name: Configure WEB servers
+  hosts: web
+  tasks:
+    - shell: cd /root/kutils && bash env.sh && bash env.sh eth2 eth2
+    - name: Install software for webservers
+      apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=86400
+      with_items:
+        - apache2
+        - libapache2-mod-php5
+        - mysql-client
+        - php5-mysql
+        - php5-memcache
+
+    - name: Ensure apache starts on boot
+      service: name=apache2 state=started enabled=yes
+
+    - name: Sync content ETC/APACHE
+      synchronize: src="./server_files/web/etc/apache2" dest="/etc/"
+    - name: Sync content ETC/PHP5
+      synchronize: src="./server_files/web/etc/php5" dest="/etc/"
+    - name: Sync content WWW
+      synchronize: src="./server_files/web/var/www" dest="/var/"
+
+    - name: restart apache2
+      service: name=apache2 state=restarted
+
+- name: Configure servers
+  hosts: memcache
+  tasks:
+    - shell: cd /root/utils && bash env.sh && bash env.sh eth2 eth2
+    - name: Install memcached 
+      apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=86400
+      with_items:
+        - memcached
+
+    - name: Ensure apache starts on boot
+      service: name=memcached state=started enabled=yes
+
+    - name: Sync content ETC
+      synchronize: src="./server_files/memcache/etc/memcached.conf" dest="/etc/"
+    - name: restart memcached
+      service: name=memcached state=restarted
