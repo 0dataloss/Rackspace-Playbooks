@@ -8,8 +8,37 @@ A sub-directory for every project will contain:
 - The architecture of the infrastructure (txt.ascii)
 - Documentation for every file (txt.txt)
 
-In order to use the template you need to have a console available to interact
-with Rackspace Cloud API, please look at http://docs.ansible.com/guide_rax.html .
+In order to use the templates you need to have an Ansible console.
+I usually suggest to have it in within Rackspace Cloud in order to use Service-net 
+for all the code push or configuration actions; all the traffic on Service-net
+is for free. 
+To install a consolle spin-up a Debian 8 Cloud Server, 1GB will be good enough as a start.
+Execute:
+apt-get update && apt-get upgrade -y && reboot
+apt-get install python-dev python-pip mysql-client vim -y
+pip install pyrax
+pip install ansible
+apt-get install ansible
+
+In /etc/ssh/ssh_config change the StrictHostKeyChecking line from:
+#   StrictHostKeyChecking ask
+to
+   StrictHostKeyChecking no
+
+In /etc/ansible/hosts at the end of the file add:
+
+[localhost]
+localhost ansible_connection=local
+
+Create an ssh using the command ssh-keygen anc then issue the command
+cat /root/.ssh/id_rsa.pub
+
+Copy the output, log in in your control panel in Rackspace Cloud and
+create a key with name start_key and past the output of the previous command
+in the space for the public key.
+
+Select your template, compile the relevanf file as per README.md and enjoy
+
 
 
 Every file in this repository is intended to be released under the Apache License, Version 2.0
