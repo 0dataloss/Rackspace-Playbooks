@@ -34,8 +34,13 @@ In /etc/ansible/hosts at the end of the file add:
      [localhost]
      localhost ansible_connection=local
 
-Create an ssh using the command ssh-keygen anc then issue the command
-cat /root/.ssh/id_rsa.pub
+Create an ssh using the command:
+     
+     ssh-keygen
+
+and then issue the command:
+
+     cat /root/.ssh/id_rsa.pub
 
 Copy the output, log in in your control panel in Rackspace Cloud and
 create a key with name start_key and past the output of the previous command
