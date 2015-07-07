@@ -17,7 +17,7 @@ To install a consolle spin-up a Debian 8 Cloud Server, 1GB will be good enough a
 To make your server an Ansible console, log into the server and execute:
 
      apt-get update && apt-get upgrade -y && reboot
-     apt-get install python-dev python-pip mysql-client vim -y
+     apt-get install git python-dev python-pip mysql-client vim -y
      pip install pyrax
      pip install ansible
      apt-get install ansible

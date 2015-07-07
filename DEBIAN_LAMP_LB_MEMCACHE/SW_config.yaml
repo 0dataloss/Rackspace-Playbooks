@@ -32,7 +32,7 @@
 - name: Configure WEB servers
   hosts: web
   tasks:
-    - shell: cd /root/kutils && bash env.sh && bash env.sh eth2 eth2
+    - shell: cd /root/utils && bash env.sh && bash env.sh eth2 eth2
     - name: Install software for webservers
       apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=86400
       with_items:
