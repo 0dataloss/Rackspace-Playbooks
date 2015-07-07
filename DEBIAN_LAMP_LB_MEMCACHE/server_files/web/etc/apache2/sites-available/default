@@ -1,12 +1,12 @@
 <VirtualHost eth1:80>
 	ServerAdmin webmaster@localhost
 
-	DocumentRoot /var/www/wordpress
+	DocumentRoot /var/www
 	<Directory />
 		Options FollowSymLinks
 		AllowOverride None
 	</Directory>
-	<Directory /var/www/wordpress>
+	<Directory /var/www>
 		Options Indexes FollowSymLinks MultiViews
 		AllowOverride None
 		Order allow,deny
