@@ -1,0 +1,81 @@
+#   Copyright 2015 Matteo Castellani <matteo@t-hoster.com>
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+- name: Configure WEB servers
+  hosts: web
+  tasks:
+    - shell: cd /root/utils && bash env.sh && bash env.sh eth2 eth2
+    - name: Install software for webservers
+      apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=86400
+      with_items:
+        - apache2
+        - libapache2-mod-php5
+        - mysql-client
+        - php5-mysql
+        - php5-memcache
+        - lsyncd
+
+    - name: Ensure apache starts on boot
+      service: name=apache2 state=started enabled=yes
+
+    - name: Sync content ETC/APACHE
+      synchronize: src="./server_files/web/etc/apache2" dest="/etc/"
+    - name: Sync content ETC/PHP5
+      synchronize: src="./server_files/web/etc/php5" dest="/etc/"
+    - name: Sync content WWW
+      synchronize: src="./server_files/web/var/www" dest="/var/"
+    - copy: src=./server_files/web/web2dep dest=/root/.ssh/id_rsa owner=root group=root mode=600
+    - authorized_key: user=root key="{{ lookup('file', './server_files/deployer/dep2web.pub')}}"
+    - copy: src=./server_files/web/etc/ssh_config dest=/etc/ssh/ssh_config
+    - file: path=/root/.ssh state=directory owner=root group=root mode=600
+    - synchronize: src="./server_files/web/etc/lsyncd.conf" dest="/etc/"
+    - shell: lsyncd /etc/lsyncd.conf ; killall lsyncd ; lsyncd /etc/lsyncd.conf
+                                                                                              
+
+    - name: restart apache2
+      service: name=apache2 state=restarted
+
+- name: Configure Memcache servers
+  hosts: memcache
+  tasks:
+    - shell: cd /root/utils && bash env.sh && bash env.sh eth2 eth2
+    - name: Install memcached 
+      apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=86400
+      with_items:
+        - memcached
+
+    - name: Ensure memcached starts on boot
+      service: name=memcached state=started enabled=yes
+
+    - name: Sync content ETC
+      synchronize: src="./server_files/memcache/etc/memcached.conf" dest="/etc/"
+    - name: restart memcached
+      service: name=memcached state=restarted
+
+- name: Configure deployer servers
+  hosts: deployer
+  tasks:
+    - shell: cd /root/utils && bash env.sh && bash env.sh eth2 eth2
+    - name: Install lsyncd
+      apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=86400
+      with_items:
+        - lsyncd
+
+    - synchronize: src="./server_files/deployer/etc/lsyncd.conf" dest="/etc"
+    - synchronize: src="./server_files/deployer/var/" dest="/var"
+    - copy: src=./server_files/deployer/etc/ssh_config dest=/etc/ssh/ssh_config
+    - copy: src=./server_files/deployer/dep2web dest=/root/.ssh/id_rsa owner=root group=root mode=600
+    - copy: src=./server_files/deployer/dep2web.pub dest=/root/.ssh/id_rsa.pub owner=root group=root mode=600
+    - file: path=/root/.ssh state=directory owner=root group=root mode=600
+    - authorized_key: user=root key="{{ lookup('file', './server_files/web/web2dep.pub') }}"
+    - shell: lsyncd /etc/lsyncd.conf ; killall lsyncd ; lsyncd /etc/lsyncd.conf

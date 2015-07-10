@@ -1,0 +1,158 @@
+#   Copyright 2015 Matteo Castellani <matteo@t-hoster.com>
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+- name: Build environment
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+
+    - name: Load Balancer create request
+      local_action:
+        module: rax_clb
+        credentials: ./repo
+        name: LB-FE
+        port: 80
+        protocol: HTTP
+        algorithm: ROUND_ROBIN
+        type: PUBLIC
+        timeout: 30
+        region: LON
+        wait: yes
+        state: present
+        meta:
+          app: Ansible-Generated-LB
+      register: clb
+
+    - name: Web - Server create request
+      local_action:
+        module: rax
+        credentials: ./repo
+        key_name: start_key
+        name: web%04d
+        flavor: performance1-1
+        image: f211a88e-4cc0-4660-bda1-56495b05cda2
+        disk_config: manual
+        networks:
+          - public
+          - private
+          - mem
+        region: LON
+        state: present
+        count: "{{ websrvn }}"
+        exact_count: yes
+        group: web
+        wait: yes
+      register: rax
+
+    - name: Add servers to web host group
+      local_action:
+        module: add_host
+        hostname: "{{ item.name }}"
+        ansible_ssh_host: "{{ item.rax_accessipv4 }}"
+        ansible_ssh_pass: "{{ item.rax_adminpass }}"
+        ansible_ssh_user: root
+        groupname: web
+      with_items: rax.success
+      when: rax.action == 'create'
+
+    - name: Detach server from Load balancer
+      local_action:
+        module: rax_clb_nodes
+        credentials: ./repo
+        load_balancer_id: "{{ clb.balancer.id }}"
+        address: "{{ item.rax_networks.private|first }}"
+        port: 80
+        state: absent
+        wait: yes
+        region: LON
+      with_items: rax.success
+      when: rax.action == 'delete'
+
+    - name: Add servers to Load balancer
+      local_action:
+        module: rax_clb_nodes
+        credentials: ./repo
+        load_balancer_id: "{{ clb.balancer.id }}"
+        address: "{{ item.rax_networks.private|first }}"
+        port: 80
+        condition: enabled
+        type: primary
+        wait: yes
+        region: LON
+      with_items: rax.success
+      when: rax.action == 'create'
+
+    - name: Memcache - Server create request
+      local_action:
+        module: rax
+        credentials: ./repo
+        key_name: start_key
+        name: memcache%04d
+        flavor: performance1-1
+        image: f211a88e-4cc0-4660-bda1-56495b05cda2
+        disk_config: manual
+        networks:
+          - public
+          - private
+          - mem
+        region: LON
+        state: present
+        count: "{{ memcachesrvn }}"
+        exact_count: yes
+        group: memcache
+        wait: yes
+      register: rax
+
+    - name: Add servers to memcache host group
+      local_action:
+        module: add_host
+        hostname: "{{ item.name }}"
+        ansible_ssh_host: "{{ item.rax_accessipv4 }}"
+        ansible_ssh_pass: "{{ item.rax_adminpass }}"
+        ansible_ssh_user: root
+        groupname: memcache
+      with_items: rax.success
+      when: rax.action == 'create'
+
+    - name: Deployer - Server create request
+      local_action:
+        module: rax
+        credentials: ./repo
+        key_name: start_key
+        name: deployer%04d
+        flavor: performance1-1
+        image: f211a88e-4cc0-4660-bda1-56495b05cda2
+        disk_config: manual
+        networks:
+          - public
+          - private
+          - mem
+        region: LON
+        state: present
+        count: "{{ deployersrvn }}"
+        exact_count: yes
+        group: deployer
+        wait: yes
+      register: rax
+
+    - name: Add server to deployer host group
+      local_action:
+        module: add_host
+        hostname: "{{ item.name }}"
+        ansible_ssh_host: "{{ item.rax_accessipv4 }}"
+        ansible_ssh_pass: "{{ item.rax_adminpass }}"
+        ansible_ssh_user: root
+        groupname: deployer
+      with_items: rax.success
+      when: rax.action == 'create'

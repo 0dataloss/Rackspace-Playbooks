@@ -1,0 +1,10 @@
+                        sync {
+                                default.rsync,
+                                source="/var/www/",
+                                target="GARGO:/var/www/",
+                                rsync = {
+                                compress = true,
+                                acls = true,
+                                verbose = true,
+                                rsh = "/usr/bin/ssh -p 22 -o StrictHostKeyChecking=no" }
+                        }
