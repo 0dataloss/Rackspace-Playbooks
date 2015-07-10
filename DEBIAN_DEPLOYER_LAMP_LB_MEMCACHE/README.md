@@ -1,11 +1,10 @@
 # Use of this infrastructure
 
-This infrastructure is a "one way only" code publishing.
-Is good for all the websites/blog where the code and all the files
-are uploaded and managed from one source ONLY, and there is no code/image/file upload
-from the users.
-If the website is hosting a CMS where the owner wants to publish images, the use of
-a CDN system is highly encouraged.
+This infrastructure is a "two way" code publishing.
+Is good for all the websites/blog where the code and files
+are uploaded and managed from 2 different sources:
+- the Deployer server which you canuse as an SFTP server
+- the web interface which is offering uploads functionality
 
 # How to use this template
 
@@ -14,6 +13,7 @@ This template is comprehensive of:
 - A presentation Layer : Cloud Load Balancer
 - An application layer : Cloud Servers (WEB+Memcache)
 - A Database Layer : Cloud Database instance
+- A code distribution Layer: Deployer2Web - Web2Deployer (every 20 sec)
 
 Type of file and content:
 
@@ -37,6 +37,7 @@ Type of file and content:
     - A Public to S-net Cloud Load Balancer
     - A number of Web servers, assign them to the web group and connect them to the Cloud Load Balancer previously created
     - 1 Memcache server and assign it to the memcache group
+    - 1 Deployer server used as a repository to distribute code to the web nodes
     - Additionally, if the webserver's number will change in time, the Playbook is able to adjust the CLB settings in realtime (delete or add nodes)
     
 - SW_config.yaml
@@ -49,6 +50,10 @@ Type of file and content:
     The initial script which will orchestrate the Playbooks and tune the configuration files for all the servers.
     It contains most of the variables which will determine your infrastructure and by default you will need to use a number as a parameter
     to define the numbers of web servers you want as initial configuration (keep in mind you will be able to add and remove servers later on)
+
+- maintain infrastructure.sh
+    Basically the same as the generate_infrastructure.sh but stripped out from the actions which does not need to be taken
+    every time we want to scale up pr down the Web layer or rebuild a single server
     
 - rax.py
     This file represent the dynamic inventory of Ansible, please see http://docs.ansible.com/guide_rax.html

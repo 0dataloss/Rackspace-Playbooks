@@ -29,29 +29,32 @@ MEMCACHESRVN=1 # for this infrastructure there will be only one memcache server
 MEMCACHEPORT=11211
 MEMCACHEADDR=eth2
 
-# Run paybook for db generation
+## Run paybook for db generation
+#
+#DBHOST=$(ansible-playbook  DB_instance.yaml -e "dbinstancename=$DBINSTANCENAME ramdbinstancename=$RAMDBINSTANCENAME diskdbinstancename=$DISKDBINSTANCENAME appdbname=$APPDBNAME userappdbname=$USERAPPDBNAME passuserappdbname=$PASSUSERAPPDBNAME BEdbname=$BEDBNAME userBEdbname=$USERBEDBNAME passuserBEdbname=$PASSUSERBEDBNAME"| grep msg | tail -n1 | cut -d\" -f4 ) 
+#
+## Compile app-db conf file
+#echo "DBHOST=$DBHOST
+#DB=$APPDBNAME
+#USER=$USERAPPDBNAME
+#PASSWORD=$PASSUSERAPPDBNAME" > .mysql_cred_app
+#
+## Compile be-db conf file
+#echo "DBHOST=$DBHOST
+#DB=$BEDBNAME
+#USER=$USERBEDBNAME
+#PASSWORD=$PASSUSERBEDBNAME" > .mysql_cred
+#
+## Create service DB
+#echo "select * from server_list limit 1;" |mysql -h $DBHOST -u $USERBEDBNAME -p$PASSUSERBEDBNAME $BEDBNAME || mysql -h $DBHOST -u $USERBEDBNAME -p$PASSUSERBEDBNAME $BEDBNAME < ./sqlschema.sql
 
-DBHOST=$(ansible-playbook  DB_instance.yaml -e "dbinstancename=$DBINSTANCENAME ramdbinstancename=$RAMDBINSTANCENAME diskdbinstancename=$DISKDBINSTANCENAME appdbname=$APPDBNAME userappdbname=$USERAPPDBNAME passuserappdbname=$PASSUSERAPPDBNAME BEdbname=$BEDBNAME userBEdbname=$USERBEDBNAME passuserBEdbname=$PASSUSERBEDBNAME"| grep msg | tail -n1 | cut -d\" -f4 ) 
-
-# Compile app-db conf file
-echo "DBHOST=$DBHOST
-DB=$APPDBNAME
-USER=$USERAPPDBNAME
-PASSWORD=$PASSUSERAPPDBNAME" > .mysql_cred_app
-
-# Compile be-db conf file
-echo "DBHOST=$DBHOST
-DB=$BEDBNAME
-USER=$USERBEDBNAME
-PASSWORD=$PASSUSERBEDBNAME" > .mysql_cred
-
-# Create service DB
-echo "select * from server_list limit 1;" |mysql -h $DBHOST -u $USERBEDBNAME -p$PASSUSERBEDBNAME $BEDBNAME || mysql -h $DBHOST -u $USERBEDBNAME -p$PASSUSERBEDBNAME $BEDBNAME < ./sqlschema.sql
+source .mysql_cred
 
 # Run playbook for servers, networks, and LB generation
 
 RAX_ACCESS_NETWORK=private ansible-playbook  NET_Cloud.yaml
 RAX_ACCESS_NETWORK=private ansible-playbook  SRV_instances.yaml -e "websrvn=$WEBSRVN memcachesrvn=$MEMCACHESRVN"
+
 
 #
 # DB cleaning procedure for dismissed WEB machine
@@ -67,7 +70,6 @@ for i in $LIST; do
 done
 # 
 # Service DB is now clean from unused or ureachable webservers
-
 
 # Generate memcache config files from templates
 LIST=$(echo "select ip from server_list where name like \"memcache%-${MEMCACHEADDR}\";" |mysql --skip-column-names -h $DBHOST -u $USERBEDBNAME -p$PASSUSERBEDBNAME $BEDBNAME )

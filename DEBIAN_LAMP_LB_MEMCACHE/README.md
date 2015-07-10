@@ -49,6 +49,10 @@ Type of file and content:
     The initial script which will orchestrate the Playbooks and tune the configuration files for all the servers.
     It contains most of the variables which will determine your infrastructure and by default you will need to use a number as a parameter
     to define the numbers of web servers you want as initial configuration (keep in mind you will be able to add and remove servers later on)
+
+- maintain_infrastructure.sh
+    Basically the same as generate_ifrastructure.sh, but stripped out from the actions which does not need to run all the time we want
+    to scale the web layer or to regenerate a deleted server
     
 - rax.py
     This file represent the dynamic inventory of Ansible, please see http://docs.ansible.com/guide_rax.html
