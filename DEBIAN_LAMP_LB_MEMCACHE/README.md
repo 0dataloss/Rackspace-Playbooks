@@ -66,5 +66,11 @@ Type of file and content:
 - sqlschema.sql
     The SQL shema for the Service Database
     
+- SYNC_var_www_webserver.yaml
+    Playbook called by the script sync_webserver.sh to sync the console '/var/www' to the webservers, one at the time
+    
+- sync_webserver.sh
+    Bash script which will run the playbook SYNC_var_www_webserver.yaml
+    
 - template
     Templates for specific configuration files

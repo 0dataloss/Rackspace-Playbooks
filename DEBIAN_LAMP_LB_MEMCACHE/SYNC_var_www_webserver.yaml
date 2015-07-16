@@ -1,0 +1,6 @@
+- name: Sync WEB servers
+  hosts: web
+  tasks:
+    
+    - name: Sync content WWW
+      synchronize: src="./server_files/web/var/www" dest="/var/"

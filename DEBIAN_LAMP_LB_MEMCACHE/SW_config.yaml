@@ -64,7 +64,7 @@
       with_items:
         - memcached
 
-    - name: Ensure apache starts on boot
+    - name: Ensure memcached starts on boot
       service: name=memcached state=started enabled=yes
 
     - name: Sync content ETC
