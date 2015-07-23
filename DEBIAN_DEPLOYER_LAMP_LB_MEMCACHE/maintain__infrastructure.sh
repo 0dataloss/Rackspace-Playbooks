@@ -55,7 +55,7 @@ MEMCACHEADDR=eth2
 
 source .mysql_cred
 
-# Generate asymmetric keys for lsynkd
+# Generate asymmetric keys for lsyncd
 [ -f server_files/deployer/dep2web ] || ssh-keygen -f server_files/deployer/dep2web -N ''
 [ -f server_files/web/web2dep ] || ssh-keygen -f server_files/web/web2dep -N ''
 
@@ -97,7 +97,7 @@ LIST=$(echo "select ip from server_list where name like \"web%${MEMCACHEADDR}\";
 echo "d2w $LIST"
 TEMPFILE=$(tempfile)
 for i in $(echo $LIST); do
-	 cat ./template/syncconf | sed -e  s/GARGO/${i}/g >> $TEMPFILE 
+	 cat ./template/syncconfd2w | sed -e  s/GARGO/${i}/g >> $TEMPFILE 
 done
 cat ./template/lsyncd.conf > ./server_files/deployer/etc/lsyncd.conf
 cat $TEMPFILE >> ./server_files/deployer/etc/lsyncd.conf
@@ -108,7 +108,7 @@ LIST=$(echo "select ip from server_list where name like \"deployer%${MEMCACHEADD
 echo "w2d $LIST"
 TEMPFILE1=$(tempfile)
 for i in $(echo $LIST); do
-        cat ./template/syncconf | sed -e  s/GARGO/${i}/g >> $TEMPFILE1
+        cat ./template/syncconfw2d | sed -e  s/GARGO/${i}/g >> $TEMPFILE1
 done
 cat ./template/lsyncd.conf > ./server_files/web/etc/lsyncd.conf
 cat $TEMPFILE1 >> ./server_files/web/etc/lsyncd.conf
